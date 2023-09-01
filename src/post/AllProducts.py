@@ -1,3 +1,5 @@
+# Code to create all main statistical image products (Variance, Timex, Brightest, and Darkest) in one go. Speeds up processing significantly by only making one pass on the image.
+
 import argparse
 import numpy as np
 import cv2
