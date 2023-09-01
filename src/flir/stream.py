@@ -263,7 +263,15 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
             device_serial_number = node_device_serial_number.GetValue()
             # print("\nDevice serial number retrieved as %s...\n" %
             #  device_serial_number)
+        # Create ImageProcessor instance for post processing images
+        processor = PySpin.ImageProcessor()
 
+        # Set default image processor color processing method
+        #
+        # *** NOTES ***
+        # By default, if no specific color processing algorithm is set, the image
+        # processor will default to NEAREST_NEIGHBOR method.
+        processor.SetColorProcessing(PySpin.SPINNAKER_COLOR_PROCESSING_ALGORITHM_HQ_LINEAR)
         # Retrieve, and display
         while (True):
             try:
@@ -316,10 +324,10 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
                     #
                     # When converting images, color processing algorithm is an
                     # optional parameter.
-                    image_converted = image_result.Convert(
-                        PySpin.PixelFormat_RGB8, PySpin.HQ_LINEAR)
+                    image_converted = processor.Convert(image_result, PySpin.PixelFormat_RGB8)
+                    #image_converted = image_result.Convert(PySpin.PixelFormat_RGB8, PySpin.HQ_LINEAR)
                     image_data = image_converted.GetNDArray()
-                    image_data = image_data.reshape(height, width, 3)
+                    # image_data = image_data.reshape(height, width, 3)
 
                     # Display the resulting frame
                     # image_data = cv2.resize(image_data, (stream_width,

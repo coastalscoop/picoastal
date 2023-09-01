@@ -41,6 +41,8 @@
 import os
 import sys
 import subprocess
+import stat
+import time
 
 # files
 from glob import glob
@@ -57,6 +59,7 @@ import argparse
 import PySpin
 
 
+    
 def set_camera_parameters(cam, nodemap, nodemap_tldevice, fps=5, height=1080,
                           width=1920, offsetx=80, offsety=236):
     """
@@ -102,22 +105,23 @@ def set_camera_parameters(cam, nodemap, nodemap_tldevice, fps=5, height=1080,
 
         # *** Image size ***
 
-        # get the current image height
-        i = cam.Height.GetValue()
-        print("Current image height: %d " % i)
-        # get the current image height
-        cam.Height.SetValue(height)
-        i = cam.Height.GetValue()
-        print("Image height set to: %d " % i)
+        # Set image height and width to maximum values
+        max_height = cam.Height.GetMax()
+        max_width = cam.Width.GetMax()
+        cam.Height.SetValue(max_height)
+        cam.Width.SetValue(max_width)
 
-        # get the current image width
-        i = cam.Width.GetValue()
-        print("Current image width: %d " % i)
-        # get the current image width
-        cam.Width.SetValue(width)
-        i = cam.Width.GetValue()
-        print("Image width set to: %d " % i)
 
+        # set the current exposure
+        cam.ExposureAuto.SetValue(2)
+        i = cam.ExposureAuto.GetValue()
+        print("Image exposure set to: %d " % i)
+        # Set auto exposure mode to 'Once'
+        #node_acquisition_exposure_auto = PySpin.CEnumerationPtr(
+                    #nodemap.GetNode("ExposureAuto"))
+        #node_acquisition_exposure_auto.SetIntValue(2)  # Set to 'Once'
+
+        print("Image exposure set to: %d " % i)
         # *** Image offset ***
 
         # get the current image offsetx
@@ -135,6 +139,9 @@ def set_camera_parameters(cam, nodemap, nodemap_tldevice, fps=5, height=1080,
         cam.OffsetY.SetValue(offsety)
         i = cam.OffsetY.GetValue()
         print("Image OffsetX set to: %d " % i)
+        
+       
+        
 
     except PySpin.SpinnakerException as ex:
         print("Error: %s" % ex)
@@ -228,7 +235,7 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
         cam.BeginAcquisition()
 
         print("\n *** Acquiring images ***\n")
-
+        
         # Retrieve device serial number for filename
         #
         # *** NOTES ***
@@ -243,8 +250,18 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
             device_serial_number = node_device_serial_number.GetValue()
             # print("\nDevice serial number retrieved as %s...\n" %
             #  device_serial_number)
+        processor = PySpin.ImageProcessor()
 
+        # Set default image processor color processing method
+        #
+        # *** NOTES ***
+        # By default, if no specific color processing algorithm is set, the image
+        # processor will default to NEAREST_NEIGHBOR method.
+        processor.SetColorProcessing(PySpin.SPINNAKER_COLOR_PROCESSING_ALGORITHM_HQ_LINEAR)
         # Retrieve, convert, and save images
+              
+       
+       
         for i in range(NUM_IMAGES):
             try:
 
@@ -296,11 +313,10 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
                     #
                     # When converting images, color processing algorithm is an
                     # optional parameter.
-                    image_converted = image_result.Convert(
-                        PySpin.PixelFormat_RGB8, PySpin.HQ_LINEAR)
+                    image_converted = processor.Convert(image_result, PySpin.PixelFormat_RGB8)
 
                     # Create a unique filename
-                    now = today.strftime("%Y%m%d_%H00")
+                    now = today.strftime("%Y%m%d_%H%M%S")
                     if device_serial_number:
                         filename = "{}-{}-{}.{}".format(device_serial_number,
                                                         now, str(i).zfill(6),
@@ -471,7 +487,13 @@ def main():
     global OUTPATH
     OUTPATH = os.path.join(main_path, today.strftime("%Y%m%d_%H00")) + "/"
     if not os.path.isdir(OUTPATH):
-        subprocess.call("mkdir -p {}".format(OUTPATH), shell=True)
+        os.makedirs(OUTPATH)
+        os.chmod(OUTPATH, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+    # OUTPATH = os.path.join(main_path, today.strftime("%Y%m%d_%H00")) + "/"
+    # if not os.path.isdir(OUTPATH):
+    #     subprocess.call("mkdir -p {}".format(OUTPATH), shell=True)
+
+
 
     # compute the number of images to capture based on frame rate
     # and capture duration

@@ -1,0 +1,68 @@
+Library version: 3.1.0.79
+
+Number of cameras detected: 1
+
+Running capture cycle for camera 0...
+
+*** DEVICE INFORMATION ***
+
+DeviceID: 00B09D4214CC_C0A80119_FFFFFF00_C0A80101
+DeviceSerialNumber: 21107916
+DeviceUserID: 
+DeviceVendorName: Point Grey Research
+DeviceModelName: Blackfly BFLY-PGE-50S5C
+DeviceVersion: FW:v1.65.3.00 FPGA:v2.02
+DeviceBootloaderVersion: Node not readable
+DeviceType: GigEVision
+DeviceDisplayName: Point Grey Research
+DeviceAccessStatus: OpenReadOnly
+DeviceLinkSpeed: 1000
+DeviceDriverVersion: none : 0.0.0.0
+DeviceIsUpdater: 0
+GenICamXMLLocation: Device
+GenICamXMLPath: 
+GUIXMLLocation: Device
+GUIXMLPath: Input.xml
+GevCCP: OpenAccess
+GevDeviceMACAddress: 0xb09d4214cc
+GevDeviceIPAddress: 0xc0a80119
+GevDeviceSubnetMask: 0xffffff00
+GevDeviceGateway: 0xc0a80101
+GevVersionMajor: 1
+GevVersionMinor: 2
+GevDeviceModeIsBigEndian: 0
+GevDeviceReadAndWriteTimeout: 100000
+GevDeviceMaximumRetryCount: 3
+GevDevicePort: 0
+GevDeviceDiscoverMaximumPacketSize: Node not readable
+GevDeviceMaximumPacketSize: 576
+GevDeviceIsWrongSubnet: 0
+GevDeviceAutoForceIP: 0
+GevDeviceForceIP: 0
+GevDeviceForceIPAddress: 0
+GevDeviceForceSubnetMask: 0
+GevDeviceForceGateway: 0
+
+*** SETTING CAMERA PARAMETERS ***
+
+Current frame rate: 10 
+Frame rate set to: 10 
+Current image height: 480 
+Image height set to: 480 
+Current image width: 640 
+Image width set to: 640 
+Current OffsetX : 80 
+Image OffsetX set to: 80 
+Current OffsetX : 236 
+Image OffsetX set to: 236 
+
+*** IMAGE ACQUISITION ***
+
+Acquisition mode set to continuous...
+
+ *** Acquiring images ***
+
+
+Camera 0 example complete... 
+
+My work is done!
