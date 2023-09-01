@@ -40,7 +40,7 @@ echo $(<$log)
 capdate=$(date +'%Y%m%d_%H00')
 echo $capdate
 # Use my own method of statistical products
-python3 $workdir/src/post/AllProducts.py -i "data/$sitename/$capdate/" -b "data/$sitename/"$sitename"_brightest_$datestr.jpeg" -d "data/$sitename/"$sitename"_darkest_$datestr.jpeg" -t "data/$sitename/"$sitename"_timex_$datestr.jpeg" -v "data/$sitename/"$sitename"_variance_$datestr.jpeg"
+python3 $workdir/src/post/AllProducts.py -i "data/$sitename/$capdate/" -o "data/$sitename/" -b "data/$sitename/"$sitename"_brightest_$datestr.jpeg" -d "data/$sitename/"$sitename"_darkest_$datestr.jpeg" -t "data/$sitename/"$sitename"_timex_$datestr.jpeg" -v "data/$sitename/"$sitename"_variance_$datestr.jpeg"
 
 # Copy one snap image
 r="$(ls -t "$workdir"data/$sitename/$capdate/ | head -n 1)"
