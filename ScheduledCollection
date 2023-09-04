@@ -1,5 +1,8 @@
 #/bin/bash
 # This is the main capture script controler
+#sudo ifconfig eth0 mtu 3582
+#sudo sysctl -w net.core.rmem_max=10485760
+#sudo sysctl -w net.core.wmem_max=10485760
 sitename="BlastBeach"
 harddrive="/media/odroid/3832-3239/"
 # create log dir
@@ -29,23 +32,30 @@ log="/home/odroid/picoastal/logs/picoastal_"$datestr".log"
 echo "Log file is : "$log
 
 # Call the capture script
+capdate=$(date +'%Y%m%d_%H00')
+echo $capdate
 script=capture.py
 echo "Calling script : "$script
-python3 $workdir/src/flir/$script -cfg $cfg > $log 2>&1
+python3 $workdir/src/flir/$script -cfg $cfg -o "data/$sitename/$capdate/" > $log 2>&1
 echo $(<$log)
 
 # Optional Post-processing
 
 # statistical images
-capdate=$(date +'%Y%m%d_%H00')
-echo $capdate
+
+#python3 $workdir/src/post/average.py -i "data/$sitename/$capdate/" -o "data/$sitename/"$sitename"_average_$datestr.jpeg"
+#python3 $workdir/src/post/variance.py -i "data/$sitename/$capdate/" -o "data/$sitename/"$sitename"_variance_$datestr.jpeg"
+#python3 $workdir/src/post/brightest_and_darkest.py -i "data/$sitename/$capdate/" -b "data/$sitename/"$sitename"_brightest_$datestr.jpeg" -d "data/$sitename/"$sitename"_darkest_$datestr.jpeg"
+
 # Use my own method of statistical products
+#python3 $workdir/src/post/AllProducts.py -i "data/$sitename/$capdate/" -o "data/$sitename/"
 python3 $workdir/src/post/AllProducts.py -i "data/$sitename/$capdate/" -o "data/$sitename/" -b "data/$sitename/"$sitename"_brightest_$datestr.jpeg" -d "data/$sitename/"$sitename"_darkest_$datestr.jpeg" -t "data/$sitename/"$sitename"_timex_$datestr.jpeg" -v "data/$sitename/"$sitename"_variance_$datestr.jpeg"
 
 # Copy one snap image
 r="$(ls -t "$workdir"data/$sitename/$capdate/ | head -n 1)"
 # cp "$workdir"data/$sitename/$capdate/$r "$workdir"data/$sitename/
 mv "$workdir"data/$sitename/$capdate/$r "$workdir"data/$sitename/"$sitename"_snap_$datestr.jpeg
+
 
 # Call the notification
 #script=notify.py
@@ -71,12 +81,14 @@ rm -r data/$sitename/
 folder_name2=$(ls -d "$workdir"logs/)
 s3cmd put --recursive "$folder_name2" "$s3_bucket"
 
-# Move logs to hard drive
+# Move log products to hard drive
 mv $folder_name2* $harddrive/$sitename && \
 diff -qr $folder_name2 $harddrive/$sitename | grep -v 'Only in' && \
 rm -r $folder_name2
 
+
 wait
-
+flag_file="/home/odroid/picoastal/shutdown_flag_on"
+if [ -f "$flag_file" ]; then
 sudo shutdown -h now
-
+fi

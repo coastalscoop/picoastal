@@ -1,0 +1,27 @@
+Current work dir is : /home/odroid/picoastal/
+Current date is : Fri Sep 1 12:38:23 BST 2023
+Capture config file is : /home/odroid/picoastal/config_flir.json
+Log file is : /home/odroid/picoastal/logs/picoastal_20230901_1238.log
+Calling script : capture.py
+Sunlight hours. Starting capture cycle. Capture starting at 2023-09-01 12:38:24.433821: Library version: 3.1.0.79 Number of cameras detected: 1 Running capture cycle for camera 0... LICENSE README.md ScheduledCollection capture.log config_flir.json data diagram.svg doc lib log.log logs output src stream.log DEVICE INFORMATION LICENSE README.md ScheduledCollection capture.log config_flir.json data diagram.svg doc lib log.log logs output src stream.log DeviceID: USB\VID_1E10&SRL_01539FE6 DeviceSerialNumber: 22257638 DeviceUserID: DeviceVendorName: Point Grey Research DeviceModelName: Flea3 FL3-U3-13E4C DeviceVersion: FW:v2.15.3.03 FPGA:v2.02 DeviceBootloaderVersion: Node not readable DeviceType: USB3Vision DeviceDisplayName: Point Grey Research DeviceAccessStatus: OpenReadWrite DeviceDriverVersion: none : 0.0.0.0 DeviceIsUpdater: 0 DeviceInstanceId: USB\VID_1E10&SRL_01539FE6 DeviceLocation: DeviceCurrentSpeed: SuperSpeed DeviceU3VProtocol: 1 DevicePortId: GenICamXMLLocation: Device GenICamXMLPath: GUIXMLLocation: Device GUIXMLPath: Input.xml LICENSE README.md ScheduledCollection capture.log config_flir.json data diagram.svg doc lib log.log logs output src stream.log SETTING CAMERA PARAMETERS LICENSE README.md ScheduledCollection capture.log config_flir.json data diagram.svg doc lib log.log logs output src stream.log Current frame rate: 2 Frame rate set to: 2 Image exposure set to: 2 Image exposure set to: 2 Current OffsetX : 0 Image OffsetX set to: 0 Current OffsetX : 0 Image OffsetX set to: 0 LICENSE README.md ScheduledCollection capture.log config_flir.json data diagram.svg doc lib log.log logs output src stream.log IMAGE ACQUISITION LICENSE README.md ScheduledCollection capture.log config_flir.json data diagram.svg doc lib log.log logs output src stream.log Acquisition mode set to continuous... LICENSE README.md ScheduledCollection capture.log config_flir.json data diagram.svg doc lib log.log logs output src stream.log Acquiring images LICENSE README.md ScheduledCollection capture.log config_flir.json data diagram.svg doc lib log.log logs output src stream.log Image saved at 22257638-20230901_123824-000000.jpeg Image saved at 22257638-20230901_123824-000001.jpeg Image saved at 22257638-20230901_123824-000002.jpeg Image saved at 22257638-20230901_123824-000003.jpeg Image saved at 22257638-20230901_123824-000004.jpeg Image saved at 22257638-20230901_123824-000005.jpeg Camera 0 example complete... My work is done! Last frame saved: data/BlastBeach/20230901_1200/22257638-20230901_123824-000005.jpeg
+20230901_1200
+Processing Images:   0%|          | 0/6 [00:00<?, ?it/s]Processing Images:  17%|█▋        | 1/6 [00:00<00:01,  3.74it/s]Processing Images:  33%|███▎      | 2/6 [00:00<00:01,  3.86it/s]Processing Images:  50%|█████     | 3/6 [00:00<00:00,  3.85it/s]Processing Images:  67%|██████▋   | 4/6 [00:01<00:00,  3.80it/s]Processing Images:  83%|████████▎ | 5/6 [00:01<00:00,  3.76it/s]Processing Images: 100%|██████████| 6/6 [00:01<00:00,  3.69it/s]Processing Images: 100%|██████████| 6/6 [00:01<00:00,  3.74it/s]
+
+Image processing completed.
+
+upload: '/home/odroid/picoastal/data/BlastBeach/BlastBeach_brightest_20230901_1238.jpeg' -> 's3://argusblastbeach/BlastBeach_brightest_20230901_1238.jpeg'  [1 of 5]
+  65536 of 186764    35% in    0s   802.54 kB/s 186764 of 186764   100% in    0s   887.42 kB/s  done
+upload: '/home/odroid/picoastal/data/BlastBeach/BlastBeach_brightest_20230901_1238.jpeg' -> 's3://argusblastbeach/BlastBeach_brightest_20230901_1238.jpeg'  [1 of 5]
+  65536 of 186764    35% in    0s  1138.57 kB/s 186764 of 186764   100% in    0s   704.89 kB/s  done
+upload: '/home/odroid/picoastal/data/BlastBeach/BlastBeach_darkest_20230901_1238.jpeg' -> 's3://argusblastbeach/BlastBeach_darkest_20230901_1238.jpeg'  [2 of 5]
+  65536 of 186677    35% in    0s    18.47 MB/s 186677 of 186677   100% in    0s  1115.34 kB/s  done
+upload: '/home/odroid/picoastal/data/BlastBeach/BlastBeach_snap_20230901_1238.jpeg' -> 's3://argusblastbeach/BlastBeach_snap_20230901_1238.jpeg'  [3 of 5]
+ 65536 of 81717    80% in    0s    20.19 MB/s 81717 of 81717   100% in    0s   917.83 kB/s  done
+upload: '/home/odroid/picoastal/data/BlastBeach/BlastBeach_timex_20230901_1238.jpeg' -> 's3://argusblastbeach/BlastBeach_timex_20230901_1238.jpeg'  [4 of 5]
+  65536 of 138599    47% in    0s    18.92 MB/s 138599 of 138599   100% in    0s   685.65 kB/s  done
+upload: '/home/odroid/picoastal/data/BlastBeach/BlastBeach_variance_20230901_1238.jpeg' -> 's3://argusblastbeach/BlastBeach_variance_20230901_1238.jpeg'  [5 of 5]
+ 37276 of 37276   100% in    0s    13.38 MB/s 37276 of 37276   100% in    0s   604.48 kB/s  done
+upload: '/home/odroid/picoastal/logs/picoastal_20230901_1238.log' -> 's3://argusblastbeach/picoastal_20230901_1238.log'  [1 of 1]
+ 1586 of 1586   100% in    0s    23.33 kB/s 1586 of 1586   100% in    0s    17.67 kB/s  done
+upload: '/home/odroid/picoastal/logs/picoastal_20230901_1238.log' -> 's3://argusblastbeach/picoastal_20230901_1238.log'  [1 of 1]
+ 1586 of 1586   100% in    0s    28.67 kB/s 1586 of 1586   100% in    0s    14.64 kB/s  done

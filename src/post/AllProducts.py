@@ -1,5 +1,3 @@
-#Code to create all main statistical image products (Variance, Timex, Brightest, and Darkest) in one go. Speeds up processing significantly by only making one pass on the image.
-
 import argparse
 import numpy as np
 import cv2
@@ -40,19 +38,20 @@ def process_images(image_paths, output_folder):
     # Initialize the accumulators for average and variance
     avg_image = np.zeros(cv2.imread(image_paths[0]).shape, dtype=np.float64)
     w = Welford()
-    
+
     # Initialize the darkest image with white pixels
     darkest_image = 255 * np.ones(cv2.imread(image_paths[0]).shape, dtype=np.uint8)
-    
+
     # Initialize the brightest image with black pixels
     brightest_image = np.zeros(cv2.imread(image_paths[0]).shape, dtype=np.uint8)
 
-    for image_path in tqdm(image_paths, desc="Processing Images"):
+    # Iterate over the images, skipping the first 10
+    for image_path in tqdm(image_paths[10:], desc="Processing Images"):
         image = cv2.imread(image_path)
-        
+
         # Update the average image
-        avg_image += (image.astype(np.float64) - avg_image) / (image_count + 1)
-        
+        avg_image += (image.astype(np.float64) - avg_image) / (image_count - 10 + 1)
+
         # Update the variance image using Welford's method
         img_as_float = img_as_float64(image)
         w.add(img_as_float)
@@ -60,7 +59,7 @@ def process_images(image_paths, output_folder):
 
         # Update the darkest image
         darkest_image = np.minimum(darkest_image, image)
-        
+
         # Update the brightest image
         brightest_image = np.maximum(brightest_image, image)
 
@@ -70,10 +69,6 @@ def process_images(image_paths, output_folder):
     scaled_variance_image = ((variance_image - min_var) / (max_var - min_var) * 255).astype(np.uint8)
 
     # Save the processed images
-    #cv2.imwrite(f"{output_folder}/average.png", avg_image.astype(np.uint8))
-    #cv2.imwrite(f"{output_folder}/variance.png", scaled_variance_image)
-    #cv2.imwrite(f"{output_folder}/darkest.png", darkest_image)
-    #cv2.imwrite(f"{output_folder}/brightest.png", brightest_image)
     cv2.imwrite(args.timex, avg_image.astype(np.uint8))
     cv2.imwrite(args.variance, scaled_variance_image)
     cv2.imwrite(args.darkest, darkest_image)
@@ -125,8 +120,6 @@ if __name__ == "__main__":
                         required=False,
                         help="Output folder for processed images.")
                         
-                        
-
     args = parser.parse_args()
 
     # Get a list of image file paths and sort them

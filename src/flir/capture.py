@@ -485,7 +485,8 @@ def main():
 
     # current cycle output path - note that this is a global variable
     global OUTPATH
-    OUTPATH = os.path.join(main_path, today.strftime("%Y%m%d_%H00")) + "/"
+    OUTPATH=(args.output)
+    #OUTPATH = os.path.join(main_path, today.strftime("%Y%m%d_%H00")) + "/"
     if not os.path.isdir(OUTPATH):
         os.makedirs(OUTPATH)
         os.chmod(OUTPATH, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
@@ -602,7 +603,14 @@ if __name__ == "__main__":
                         dest="config",
                         required=True,
                         help="Configuration JSON file.",)
-
+    # output destination
+    parser.add_argument("--output", "-o",
+                        action="store",
+                        dest="output",
+                        default="output",
+                        required=False,
+                        help="Output folder for processed images.")
+                        
     args = parser.parse_args()
 
     # call the main program
