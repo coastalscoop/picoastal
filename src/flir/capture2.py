@@ -23,7 +23,7 @@ import PySpin
 NUM_IMAGES = 10  # Number of images to capture
 
 def set_camera_parameters(cam, nodemap, nodemap_tldevice, fps=5, height=1080,
-                          width=1920, offsetx=80, offsety=236):
+                          width=1000, offsetx=80, offsety=236):
     """
     Set capture parameters.
 
@@ -58,10 +58,10 @@ def set_camera_parameters(cam, nodemap, nodemap_tldevice, fps=5, height=1080,
         cam.AcquisitionFrameRate.SetValue(fps)
 
         # *** Image size ***
-        max_height = cam.Height.GetMax()
-        max_width = cam.Width.GetMax()
-        cam.Height.SetValue(max_height)
-        cam.Width.SetValue(max_width)
+        #max_height = cam.Height.GetMax()
+        #max_width = cam.Width.GetMax()
+        #cam.Height.SetValue(max_height)
+        #cam.Width.SetValue(max_width)
 
         cam.OffsetX.SetValue(offsetx)
         cam.OffsetY.SetValue(offsety)

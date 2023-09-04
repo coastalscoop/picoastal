@@ -4,13 +4,13 @@
 sitename="BlastBeach"
 harddrive="/media/odroid/3832-3239"
 # create log dir
-mkdir -p "/home/odroid/picoastal/logs/"
+mkdir -p "/home/odroid/multicam/logs/"
 
 # Export this variable
 export FLIR_GENTL32_CTI=/opt/spinnaker/lib/flir-gentl/FLIR_GenTL.cti
 
 # Define where your code is located
-workdir="/home/odroid/picoastal/"
+workdir="/home/odroid/multicam/"
 echo "Current work dir is : "$workdir
 
 # Get the current date
@@ -19,65 +19,22 @@ datestr=$(date +'%Y%m%d_%H%M')
 echo "Current date is : "$date
 
 # Your configuration file
-cfg="/home/odroid/picoastal/config_flir.json"
+cfg="/home/odroid/multicam/config_flir.json"
 echo "Capture config file is : "$cfg
 
 # Change to current work directory
 cd $workdir
 
 # Current cycle log file
-log="/home/odroid/picoastal/logs/picoastal_"$datestr".log"
+log="/home/odroid/multicam/logs/multicam_"$datestr".log"
 echo "Log file is : "$log
 
 # Call the capture script
 capdate=$(date +'%Y%m%d_%H00')
 echo $capdate
-script=capture.py
+script=capture2.py
 echo "Calling script : "$script
 python3 $workdir/src/flir/$script -cfg $cfg -o "data/$sitename/$capdate/" > $log 2>&1
 echo $(<$log)
 
-# Optional Post-processing
 
-# statistical images
-python3 $workdir/src/post/AllProducts.py -i "data/$sitename/$capdate/" -o "data/$sitename/" -b "data/$sitename/"$sitename"_brightest_$datestr.jpeg" -d "data/$sitename/"$sitename"_darkest_$datestr.jpeg" -t "data/$sitename/"$sitename"_timex_$datestr.jpeg" -v "data/$sitename/"$sitename"_variance_$datestr.jpeg"
-
-# Copy one snap image
-r="$(ls -t "$workdir"data/$sitename/$capdate/ | head -n 1)"
-# cp "$workdir"data/$sitename/$capdate/$r "$workdir"data/$sitename/
-mv "$workdir"data/$sitename/$capdate/$r "$workdir"data/$sitename/"$sitename"_snap_$datestr.jpeg
-
-# Call the notification
-#script=notify.py
-#attachment=$(tail -n 1 $log)
-#echo $attachment
-#echo "Calling script : "$script
-#python3 $workdir$script -cfg $email -log $log -a $attachment
-
-# Delete raw files
-rm -r data/$sitename/$capdate/
-
-# Upload image products to AWS
-folder_name=$(ls -d "$workdir"data/$sitename/)
-s3_bucket="s3://argusblastbeach"
-s3cmd put --recursive "$folder_name" "$s3_bucket"
-
-# Move image products to hard drive
-mv data/$sitename/* $harddrive/$sitename && \
-diff -qr data/$sitename/ $harddrive/$sitename | grep -v 'Only in' && \
-rm -r data/$sitename/
-
-# Move logs to AWS
-folder_name2=$(ls -d "$workdir"logs/)
-s3cmd put --recursive "$folder_name2" "$s3_bucket"
-
-# Move log products to hard drive
-mv $folder_name2* $harddrive/$sitename && \
-diff -qr $folder_name2 $harddrive/$sitename | grep -v 'Only in' && \
-rm -r $folder_name2
-
-wait
-flag_file="/home/odroid/picoastal/shutdown_flag_on"
-if [ -f "$flag_file" ]; then
-sudo shutdown -h now
-fi
