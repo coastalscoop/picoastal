@@ -1,43 +1,3 @@
-# coding=utf-8
-# =============================================================================
-# Copyright (c) 2001-2019 FLIR Systems, Inc. All Rights Reserved.
-#
-# This software is the confidential and proprietary information of FLIR
-# Integrated Imaging Solutions, Inc. ("Confidential Information"). You
-# shall not disclose such Confidential Information and shall use it only in
-# accordance with the terms of the license agreement you entered into
-# with FLIR Integrated Imaging Solutions, Inc. (FLIR).
-#
-# FLIR MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF THE
-# SOFTWARE, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE
-# IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-# PURPOSE, OR NON-INFRINGEMENT. FLIR SHALL NOT BE LIABLE FOR ANY DAMAGES
-# SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
-# THIS SOFTWARE OR ITS DERIVATIVES.
-# =============================================================================
-#
-# Acquisition.py shows how to acquire images. It relies on
-# information provided in the Enumeration example. Also, check out the
-# ExceptionHandling and NodeMapInfo examples if you haven"t already.
-# ExceptionHandling shows the handling of standard and Spinnaker exceptions
-# while NodeMapInfo explores retrieving information from various node types.
-#
-# This example touches on the preparation and cleanup of a camera just before
-# and just after the acquisition of images. Image retrieval and conversion,
-# grabbing image data, and saving images are all covered as well.
-#
-# Once comfortable with Acquisition, we suggest checking out
-# AcquisitionMultipleCamera, NodeMapCallback, or SaveToAvi.
-# AcquisitionMultipleCamera demonstrates simultaneously acquiring images from
-# a number of cameras, NodeMapCallback serves as a good introduction to
-# programming with callbacks and events, and SaveToAvi exhibits video creation.
-
-# This example has been modified by Caio Stringari for the PiCoastal Project.
-
-# - Fixed all PEP8 issues.
-# - Add a JSON config file that has options to set frame rate,
-#   capture interval, image ROI, dx, dy and more.
-
 import os
 import sys
 import subprocess
@@ -168,28 +128,7 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
         result = True
 
         # Set acquisition mode to continuous
-        #
-        #  *** NOTES ***
-        # Because the example acquires and saves 10 images, setting
-        # acquisition mode to continuous lets the example finish. If set to
-        # single frame or multiframe (at a lower number of images),
-        # the example would just hang. This would happen because the example
-        # has been written to acquire N images while the camera would have
-        # been programmed to retrieve less than that.
-        #
-        # Setting the value of an enumeration node is slightly more complicated
-        # than other node types. Two nodes must be retrieved: first, the
-        # enumeration node is retrieved from the nodemap; and second, the entry
-        # node is retrieved from the enumeration node. The integer value of the
-        # entry node is then set as the new value of the enumeration node.
-        #
-        # Notice that both the enumeration and the entry nodes are checked for
-        # availability and readability/writability. Enumeration nodes are
-        # generally readable and writable whereas their entry nodes are only
-        # ever readable.
-        #
-        #  Retrieve enumeration node from nodemap
-
+       
         # In order to access the node entries, they have to be casted to a
         # pointer type (CEnumerationPtr here)
         node_acquisition_mode = PySpin.CEnumerationPtr(
@@ -222,15 +161,7 @@ def acquire_images(cam, nodemap, nodemap_tldevice):
         print("Acquisition mode set to continuous...")
 
         # Begin acquiring images
-        #
-        # *** NOTES ***
-        # What happens when the camera begins acquiring images depends on the
-        # acquisition mode. Single frame captures only a single image, multi
-        # frame catures a set number of images, and continuous captures a
-        # continuous stream of images. Because the example calls for the
-        # retrieval of 10 images, continuous mode has been set.
-        #
-        # *** LATER ***
+       
         # Image acquisition must be ended when no more images are needed.
         cam.BeginAcquisition()
 
@@ -450,149 +381,9 @@ def main():
     """
     Run the main program.
 
-    Example entry point; please see Enumeration example for more in-depth
-    comments on preparing and cleaning up the system.
-
     :return: True if successful, False otherwise.
     :rtype: bool
     """
-    # verify if the input file exists,
-    # if it does, then read it
-    inp = args.config[0]
-    if os.path.isfile(inp):
-        with open(inp, "r") as f:
-            cfg = json.load(f)
-    else:
-        raise IOError("No such file or directory \"{}\"".format(inp))
-
-    # get the date
-    global today
-    today = datetime.datetime.now()
-
-    # check if current hour is in capture hours
-    hour = today.hour
-    capture_hours = cfg["data"]["hours"]
-    if hour in capture_hours:
-        print("Sunlight hours. Starting capture cycle.\n")
-        print("Capture starting at {}:\n".format(today))
-    else:
-        print("Not enough sunlight at {}. Not starting capture cycle.".format(
-            today))
-        sys.exit()
-
-    # read the output path
-    main_path = cfg["data"]["output"]
-
-    # current cycle output path - note that this is a global variable
-    global OUTPATH
-    OUTPATH=(args.output)
-    #OUTPATH = os.path.join(main_path, today.strftime("%Y%m%d_%H00")) + "/"
-    if not os.path.isdir(OUTPATH):
-        os.makedirs(OUTPATH)
-        os.chmod(OUTPATH, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
-    # OUTPATH = os.path.join(main_path, today.strftime("%Y%m%d_%H00")) + "/"
-    # if not os.path.isdir(OUTPATH):
-    #     subprocess.call("mkdir -p {}".format(OUTPATH), shell=True)
-
-
-
-    # compute the number of images to capture based on frame rate
-    # and capture duration
-    fps = cfg["capture"]["framerate"]
-    duration = cfg["capture"]["duration"]
-
-    # number of images to grab - note that this is a global variable
-    global NUM_IMAGES
-    NUM_IMAGES = fps * duration
-
-    # image extenstion - note that this is a global variable
-    global EXT
-    EXT = cfg["data"]["format"]
-
-    # Since this application saves images in the current folder
-    # we must ensure that we have permission to write to this folder.
-    # If we do not have permission, fail right away.
-    try:
-        test_file = open(os.path.join(OUTPATH, "test.txt"), "w+")
-    except IOError:
-        print("Unable to write to current directory."
-              "Please check permissions.")
-        # input("Press Enter to exit...")
-        return False
-
-    test_file.close()
-    os.remove(test_file.name)
-
-    result = True
-
-    # Retrieve singleton reference to system object
-    system = PySpin.System.GetInstance()
-
-    # Get current library version
-    version = system.GetLibraryVersion()
-    print("Library version: %d.%d.%d.%d" %
-          (version.major, version.minor, version.type, version.build))
-
-    # Retrieve list of cameras from the system
-    cam_list = system.GetCameras()
-
-    num_cameras = cam_list.GetSize()
-
-    print("\nNumber of cameras detected: %d" % num_cameras)
-
-    # Finish if there are no cameras
-    if num_cameras == 0:
-
-        # Clear camera list before releasing system
-        cam_list.Clear()
-
-        # Release system instance
-        system.ReleaseInstance()
-
-        print("Not enough cameras!")
-        input("Done! Press Enter to exit...")
-        return False
-
-    # Only support for 1 camera at the moment
-    elif num_cameras == 1:
-        pass
-
-    else:
-        raise IOError("Only support one camera at the moment")
-        return False
-
-    # Run example on each camera
-    for i, cam in enumerate(cam_list):
-
-        print("\nRunning capture cycle for camera %d..." % i)
-
-        result &= run_single_camera(cam, cfg)
-        print("\nCamera %d example complete... \n" % i)
-        print("My work is done!")
-
-        # print the last frame save, this simplify the notification script
-        print("\nLast frame saved:")
-        print(natsorted(glob(OUTPATH+"/*"))[-1])
-
-    # Release reference to camera
-    # NOTE: Unlike the C++ examples, we cannot rely on pointer objects
-    # being automatically
-    # cleaned up when going out of scope.
-    # The usage of del is preferred to assigning the variable to None.
-    del cam
-
-    # Clear camera list before releasing system
-    cam_list.Clear()
-
-    # Release system instance
-    system.ReleaseInstance()
-
-    # input("Done! Press Enter to exit...")
-    return result
-
-
-if __name__ == "__main__":
-
     # Argument parser
     parser = argparse.ArgumentParser()
 
@@ -610,6 +401,100 @@ if __name__ == "__main__":
                         default="output",
                         required=False,
                         help="Output folder for processed images.")
+
+    args = parser.parse_args()
+
+    # verify if the input file exists,
+    # if it does, then read it
+    inp = args.config[0]
+    if os.path.isfile(inp):
+        with open(inp, "r") as f:
+            cfg = json.load(f)
+    else:
+        raise IOError("No such file or directory \"{}\"".format(inp))
+
+    # get the date
+    global today
+    today = datetime.datetime.now()
+
+    # check if the current hour is in capture hours
+    hour = today.hour
+    capture_hours = cfg["data"]["hours"]
+    if hour in capture_hours:
+        print("Sunlight hours. Starting capture cycle.\n")
+        print("Capture starting at {}:\n".format(today))
+    else:
+        print("Not enough sunlight at {}. Not starting capture cycle.".format(
+            today))
+        sys.exit()
+
+    # read the output path
+    main_path = cfg["data"]["output"]
+
+    # current cycle output path - note that this is a global variable
+    global OUTPATH
+    OUTPATH = args.output
+    if not os.path.isdir(OUTPATH):
+        os.makedirs(OUTPATH)
+        os.chmod(OUTPATH, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+
+    result = True
+
+    # Retrieve singleton reference to the system object
+    system = PySpin.System.GetInstance()
+
+    # Get the current library version
+    version = system.GetLibraryVersion()
+    print("Library version: %d.%d.%d.%d" %
+          (version.major, version.minor, version.type, version.build))
+
+    # Retrieve the list of cameras from the system
+    cam_list = system.GetCameras()
+
+    num_cameras = cam_list.GetSize()
+
+    print("\nNumber of cameras detected: %d" % num_cameras)
+
+    # Finish if there are no cameras
+    if num_cameras < 2:  # Require at least two cameras
+
+        # Clear camera list before releasing the system
+        cam_list.Clear()
+
+        # Release the system instance
+        system.ReleaseInstance()
+
+        print("Not enough cameras!")
+        input("Done! Press Enter to exit...")
+        return False
+
+    # Run the example on each camera
+    for i in range(2):  # Loop through the first two cameras
+
+        cam = cam_list.GetByIndex(i)
+
+        print("\nRunning capture cycle for camera %d..." % i)
+
+        result &= run_single_camera(cam, cfg)
+        print("\nCamera %d example complete... \n" % i)
+        print("My work is done!")
+
+        # Release reference to the camera
+        del cam
+
+    # Clear the camera list before releasing the system
+    cam_list.Clear()
+
+    # Release the system instance
+    system.ReleaseInstance()
+
+    # input("Done! Press Enter to exit...")
+    return result
+
+
+if __name__ == "__main__":
+    # Call the main program
+    main()
                         
     args = parser.parse_args()
 
