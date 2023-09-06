@@ -110,23 +110,117 @@ In 2020, the Raspberry Pi foundation released the [High Quality Camera](https://
 [![](doc/HQPiCamera.png)](https://www.youtube.com/watch?v=YzEZvTwO7tA)
 
 ## 1.4 Raspberry Pi DS3231 RTC and Arducam V2.2 Multi camera adapters
-To add the DS3231 RTC, we follow instructions from https://www.raspberrypi-spy.co.uk/2015/05/adding-a-ds3231-real-time-clock-to-the-raspberry-pi/ detailed below:
+To add the DS3231 RTC, we follow instructions from [https://www.raspberrypi-spy.co.uk/2015/05/adding-a-ds3231-real-time-clock-to-the-raspberry-pi/](https://pimylifeup.com/raspberry-pi-rtc/) detailed below:
 
-Modify the system file using:
+
+First, if you wish to use a CR2032 battery (non rechargable) rather than a LI2032 (rechargeable), you need to desolder and remove the 201 resistor (top right in the image below):
+![image](https://github.com/coastalscoop/picoastal/assets/97456050/9de6f483-b4ee-4c2d-93fd-3ee0671251bb)
+
+Connect the RTC module as follows:
+| DS1307 | Pi GPIO         |
+|--------|-----------------|
+| GND    | P1-06           |
+| Vcc    | P1-01 (3.3V)    |
+| SDA    | P1-03 (I2C SDA) |
+| SCL    | P1-05 (I2C SCL) |
+
+Run the configurator to ensure the I2C interfact is enabled
 
 ```bash
-sudo nano /etc/modules
+sudo raspi-config
 ```
-If it isn’t already there add “rtc-ds1307” to the bottom so it looks something like :
+This command will bring up the configuration tool; this tool is an easy way to make a variety of changes to your Raspberry Pi’s configuration. Today, however, we will only by exploring how to enable the I2C interface. 
+Use the arrow keys to go down and select “5 Interfacing Options“. Once this option has been selected, you can press Enter.
+
+On the next screen, you will want to use the arrow keys to select “P5 I2C“, press Enter once highlighted to choose this option.
+
+You will now be asked if you want to enable the “ARM I2C Interface“, select Yes with your arrow keys and press Enter to proceed.
+
+Once the raspi-config tool makes the needed changes, the following text should appear on the screen: “The ARM I2C interface is enabled“.
+
+However, before I2C is genuinely enabled, we must first restart the Raspberry Pi. To do this first get back to the terminal by pressing Enter and then ESC.
 
 ```bash
-snd-bcm2835
-i2c-bcm2835
-i2c-dev
-rtc-ds1307
+sudo reboot
 ```
 
-You can save and quit using CTRL-X, Y and ENTER.
+Once the Raspberry Pi has finished restarting we need to install an additional two packages, these packages will help us tell whether we have set up I2C successfully and that it is working as intended.
+
+Run the following command on your Raspberry Pi to install python-smbus and i2c-tools:
+```bash
+sudo apt install python3-smbus i2c-tools
+```
+
+With those tools now installed run the following command on your Raspberry Pi to detect that you have correctly wired up your RTC device.
+```bash
+sudo i2cdetect -y 1
+```
+If you have successfully wired up your RTC circuit, you should see the ID #68 appear. This id is the address of the DS1307, DS3231 and the PCF85231 RTC Chips.
+
+With I2C successfully setup and verified that we could see our RTC circuit then we can begin the process of configuring the Raspberry Pi to use our RTC Chip for its time.
+
+To do this, we will first have to modify the Raspberry Pi’s boot configuration file so that the correct Kernel driver for our RTC circuit will be successfully loaded in.
+
+Run the following command on your Raspberry PI to begin editing the /boot/config.txt file.
+
+```bash
+sudo nano /boot/config.txt
+```
+Within this file, you will want to add one of the following lines to the bottom of the file, make sure you use the correct one for the RTC Chip you are using.
+```bash
+dtoverlay=i2c-rtc,ds3231
+```
+Once you have added the correct line for your device to the bottom of the file you can save and quit out of it by pressing CTRL + X, then Y and then ENTER.
+
+With that change made we need to restart the Raspberry Pi, so it loads in the latest configuration changes.
+
+Run the following command on your Raspberry Pi to restart it.
+
+```bash
+sudo reboot
+```
+Once your Raspberry Pi has finished restarting we can now run the following command, this is so we can make sure that the kernel drivers for the RTC Chip are loaded in.
+
+```bash
+sudo i2cdetect -y 1
+```
+
+You should see a wall of text appear, if UU appears instead of 68 then we have successfully loaded in the Kernel driver for our RTC circuit.
+
+Now that we have successfully got the kernel driver activated for the RTC Chip and we know it’s communicating with the Raspberry Pi, we need to remove the fake hwclock package. This package acts as a placeholder for the real hardware clock when you don’t have one.
+
+Type the following two commands into the terminal on your Raspberry Pi to remove the fake-hwclock package. We also remove hwclock from any startup scripts as we will no longer need this.
+```bash
+sudo apt -y remove fake-hwclock
+sudo update-rc.d -f fake-hwclock remove
+```
+
+Now that we have disabled the fake-hwclock package we can proceed with getting the original hardware clock script that is included in Raspbian up and running again by commenting out a section of code.
+
+Run the following command to begin editing the original RTC script.
+```bash
+sudo nano /lib/udev/hwclock-set
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # 2. Software
 
 ## 2.1. Operating System (OS)
