@@ -20,6 +20,7 @@ year with a very similar similar set-up to the one described in this repository.
   - [1.1. Computer Board](#11-computer-board)
   - [1.2. FLIR Machine Vision Camera](#12-flir-machine-vision-camera)
   - [1.3 Raspberry Pi High Quality Camera (2021 update)](#13-raspberry-pi-high-quality-camera-2021-update)
+  - [1.4 Raspberry Pi DS3231 RTC and Arducam V2.2 Multi camera adapters](#14-Raspberry-Pi-DS3231-RTC-and-Arducam-V2.2-Multi-camera-adapters)
 - [2. Software](#2-software)
   - [2.1. Operating System (OS)](#21-operating-system-os)
     - [2.1.1. Ubuntu Mate Installation](#211-ubuntu-mate-installation)
@@ -109,6 +110,7 @@ In 2020, the Raspberry Pi foundation released the [High Quality Camera](https://
 
 [![](doc/HQPiCamera.png)](https://www.youtube.com/watch?v=YzEZvTwO7tA)
 
+# <a name="14-Raspberry-Pi-DS3231-RTC-and-Arducam-V2.2-Multi-camera-adapters"></a>
 ## 1.4 Raspberry Pi DS3231 RTC and Arducam V2.2 Multi camera adapters
 To add the DS3231 RTC, we follow instructions from [https://www.raspberrypi-spy.co.uk/2015/05/adding-a-ds3231-real-time-clock-to-the-raspberry-pi/](https://pimylifeup.com/raspberry-pi-rtc/) detailed below:
 
