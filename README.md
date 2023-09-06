@@ -109,7 +109,24 @@ In 2020, the Raspberry Pi foundation released the [High Quality Camera](https://
 
 [![](doc/HQPiCamera.png)](https://www.youtube.com/watch?v=YzEZvTwO7tA)
 
+## 1.4 Raspberry Pi DS3231 RTC and Arducam V2.2 Multi camera adapters
+To add the DS3231 RTC, we follow instructions from https://www.raspberrypi-spy.co.uk/2015/05/adding-a-ds3231-real-time-clock-to-the-raspberry-pi/ detailed below:
 
+Modify the system file using:
+
+```bash
+sudo nano /etc/modules
+```
+If it isn’t already there add “rtc-ds1307” to the bottom so it looks something like :
+
+```bash
+snd-bcm2835
+i2c-bcm2835
+i2c-dev
+rtc-ds1307
+```
+
+You can save and quit using CTRL-X, Y and ENTER.
 # 2. Software
 
 ## 2.1. Operating System (OS)
