@@ -236,6 +236,13 @@ Now if you read the time directly from the RTC module again, you will notice tha
 ```bash
 sudo hwclock -r
 ```
+
+
+## 1.5 Arducam multi-camera adapter
+If we wish to use multiple cameras on our set up, we must install the Arducam multi camera adapter. Because we are using an RTC module, physical installation of the hardware is complicated by the fact both the RTC and Arducam adapater share GPIO pins. You can either solder a solution, or use a breadboard. The pins required by the Arducam module are shown below:
+
+![image](https://github.com/coastalscoop/picoastal/assets/97456050/c093f2d7-bca3-4419-bc25-2051bb5af474)
+
 # 2. Software
 
 ## 2.1. Operating System (OS)
