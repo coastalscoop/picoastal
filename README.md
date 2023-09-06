@@ -20,7 +20,7 @@ year with a very similar similar set-up to the one described in this repository.
   - [1.1. Computer Board](#11-computer-board)
   - [1.2. FLIR Machine Vision Camera](#12-flir-machine-vision-camera)
   - [1.3 Raspberry Pi High Quality Camera (2021 update)](#13-raspberry-pi-high-quality-camera-2021-update)
-  - [1.4 Raspberry Pi DS3231 RTC and Arducam V2.2 Multi camera adapters](#14-Raspberry-Pi-DS3231-RTC-and-Arducam-V2.2-Multi-camera-adapters)
+  - [#14-Raspberry-Pi-DS3231-RTC-and-Arducam-V2.2-Multi-camera-adapters](https://github.com/coastalscoop/picoastal/blob/pi/README.md#14-raspberry-pi-ds3231-rtc-and-arducam-v22-multi-camera-adapters)
 - [2. Software](#2-software)
   - [2.1. Operating System (OS)](#21-operating-system-os)
     - [2.1.1. Ubuntu Mate Installation](#211-ubuntu-mate-installation)
