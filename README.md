@@ -20,7 +20,7 @@ year with a very similar similar set-up to the one described in this repository.
   - [1.1. Computer Board](#11-computer-board)
   - [1.2. FLIR Machine Vision Camera](#12-flir-machine-vision-camera)
   - [1.3 Raspberry Pi High Quality Camera (2021 update)](#13-raspberry-pi-high-quality-camera-2021-update)
-  - [#14-Raspberry-Pi-DS3231-RTC-and-Arducam-V2.2-Multi-camera-adapters](https://github.com/coastalscoop/picoastal/blob/pi/README.md#14-raspberry-pi-ds3231-rtc-and-arducam-v22-multi-camera-adapters)
+  - [1.4 Raspberry Pi DS3231 RTC](https://github.com/coastalscoop/picoastal/blob/pi/README.md#14-raspberry-pi-ds3231-rtc)
 - [2. Software](#2-software)
   - [2.1. Operating System (OS)](#21-operating-system-os)
     - [2.1.1. Ubuntu Mate Installation](#211-ubuntu-mate-installation)
@@ -110,8 +110,8 @@ In 2020, the Raspberry Pi foundation released the [High Quality Camera](https://
 
 [![](doc/HQPiCamera.png)](https://www.youtube.com/watch?v=YzEZvTwO7tA)
 
-# <a name="14-Raspberry-Pi-DS3231-RTC-and-Arducam-V2.2-Multi-camera-adapters"></a>
-## 1.4 Raspberry Pi DS3231 RTC and Arducam V2.2 Multi camera adapters
+
+## 1.4 Raspberry Pi DS3231 RTC 
 To add the DS3231 RTC, we follow instructions from [https://www.raspberrypi-spy.co.uk/2015/05/adding-a-ds3231-real-time-clock-to-the-raspberry-pi/](https://pimylifeup.com/raspberry-pi-rtc/) detailed below:
 
 
@@ -203,26 +203,39 @@ Run the following command to begin editing the original RTC script.
 ```bash
 sudo nano /lib/udev/hwclock-set
 ```
+Find and comment out the following three lines by placing # in front of it as we have done below.
+```bash
+if [ -e /run/systemd/system ] ; then
+    exit 0
+fi
+```
+Replace with:
+```bash
+#if [ -e /run/systemd/system ] ; then
+#    exit 0
+#fi
+```
+Once you have made the change, save the file by pressing CTRL + X then Y then ENTER.
 
+Now that we have our RTC module all hooked up and Raspbian and the Raspberry Pi configured correctly we need to synchronize the time with our RTC Module. The reason for this is that the time provided by a new RTC module will be incorrect.
 
+You can read the time directly from the RTC module by running the following command if you try it now you will notice it is currently way off our current real-time.
+```bash
+sudo hwclock -D -r
+```
+Now before we go ahead and sync the correct time from our Raspberry Pi to our RTC module, we need to run the following command to make sure the time on the Raspberry Pi is in fact correct. If the time is not right, make sure that you are connected to a Wi-Fi or Ethernet connection.
+```bash
+date
+```
+If the time displayed by the date command is correct, we can go ahead and run the following command on your Raspberry Pi. This command will write the time from the Raspberry Pi to the RTC Module.
+```bash
+sudo hwclock -w
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Now if you read the time directly from the RTC module again, you will notice that it has been changed to the same time as what your Raspberry Pi was set at. You should never have to rerun the previous command if you keep a battery in your RTC module.
+```bash
+sudo hwclock -r
+```
 # 2. Software
 
 ## 2.1. Operating System (OS)
